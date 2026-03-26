@@ -4,24 +4,30 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.client.session.aiohttp import AiohttpSession
+
 from config import BOT_TOKEN
+from handlers import register_handlers
 
 logging.basicConfig(level=logging.INFO)
 
-# Укажите здесь ваш рабочий прокси (пример для HTTP)
-PROXY_URL = "http://127.0.0.1:1080"
-
+# Твой SOCKS5 прокси с авторизацией
+PROXY_URL = "socks5://jtwbqWxBm8:aMoQTeD2J6@109.120.130.74:27942"
 
 async def main():
     # Создаем сессию с прокси
     session = AiohttpSession(proxy=PROXY_URL)
-    bot = Bot(token=BOT_TOKEN, session=session, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    
+    bot = Bot(
+        token=BOT_TOKEN,
+        session=session,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+    )
     dp = Dispatcher()
-
-    # ... (ваш код с регистрацией хендлеров)
-
+    
+    await register_handlers(dp, bot)
+    
+    logging.info("✅ Бот запущен через SOCKS5 прокси!")
     await dp.start_polling(bot)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
